@@ -196,41 +196,57 @@
         }
       }
 
-      /* 🎵 Custom Audio Player */
-      .audio-player {
-        margin: 15px auto;
+      /* 🎵 Fixed Audio Player */
+      .audio-player-fixed {
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        z-index: 9999;
         display: flex;
         align-items: center;
-        justify-content: center;
-        gap: 15px;
+        gap: 10px;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 8px 12px;
+        border-radius: 30px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+      }
+      .audio-player-fixed span {
+        font-size: 13px;
+        color: #ffce1d;
       }
       .play-btn {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        border: none;
-        background: linear-gradient(135deg, #ff4081, #ffce1d);
-        color: #fff;
-        font-size: 20px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-        transition: 0.3s;
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
       }
-      .play-btn:hover {
-        transform: scale(1.1);
-      }
-      .audio-player span {
-        font-size: 14px;
-        color: #ffce1d;
-        font-weight: 500;
+      @media (max-width: 480px) {
+        .audio-player-fixed {
+          top: 10px;
+          right: 10px;
+          padding: 6px 10px;
+        }
+        .play-btn {
+          width: 30px;
+          height: 35px;
+          font-size: 10px;
+          padding: 6px 10px;
+        }
+        .audio-player-fixed span {
+          font-size: 12px;
+        }
       }
     </style>
   </head>
   <body>
     <div class="stars" id="stars"></div>
+
+    <!-- 🎵 Custom Audio Player (Fixed) -->
+    <div class="audio-player-fixed">
+      <button class="play-btn" id="playPause">▶</button>
+      <span id="audioStatus">Now Playing...</span>
+    </div>
+    <audio id="bgMusic" src="/Kunmie-Majekaja.mp3" autoplay loop muted></audio>
+
     <div class="container">
       <h1 id="hiddenText">For My Princess 💕</h1>
 
@@ -293,14 +309,6 @@
 
       <div class="gallery">
         <h2>Swipe Through Memories 📸</h2>
-
-        <!-- 🎵 Custom Audio Player -->
-        <div class="audio-player">
-          <button class="play-btn" id="playPause">▶</button>
-          <span id="audioStatus">Now Playing...</span>
-        </div>
-        <audio id="bgMusic" src="/Kunmie-Majekaja.mp3" autoplay loop></audio>
-
         <div class="gallery-container">
           <img src="/Hameedah3.jpeg" alt="Her Pic 2" />
           <img src="/Hameedah1.jpeg" alt="Her Pic 3" />
@@ -407,6 +415,26 @@
       const status = document.getElementById("audioStatus");
       let isPlaying = true;
 
+      // Try autoplay muted
+      music.play().catch(() => {
+        status.textContent = "Tap ▶ to Play";
+      });
+
+      // Unmute after first interaction
+      document.body.addEventListener(
+        "click",
+        () => {
+          if (music.muted) {
+            music.muted = false;
+            music.play();
+            playBtn.textContent = "⏸";
+            status.textContent = "Now Playing...";
+            isPlaying = true;
+          }
+        },
+        { once: true }
+      );
+
       playBtn.addEventListener("click", () => {
         if (isPlaying) {
           music.pause();
@@ -422,10 +450,3 @@
     </script>
   </body>
 </html>
-
-
-
-
-
-
-
